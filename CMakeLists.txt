@@ -39,10 +39,6 @@ set_target_properties(${TARGET} PROPERTIES
   WIN32_EXECUTABLE FALSE
 )
 
-target_link_libraries(${TARGET} PUBLIC
-  -mconsole
-)
-
 target_include_directories(${TARGET} PRIVATE
   ${SDL2_INCLUDE_DIR}
 
@@ -65,6 +61,10 @@ target_link_libraries(${TARGET} PUBLIC
 )
 
 if (WIN32)
+    target_link_libraries(${TARGET} PUBLIC
+    -mconsole
+  )
+
   file(
     COPY scripts/1run.bat
     DESTINATION ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_BINDIR}
