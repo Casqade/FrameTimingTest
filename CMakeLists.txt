@@ -47,12 +47,25 @@ target_include_directories(${TARGET} PRIVATE
 )
 
 
-if (NOT ${BUILD_SHARED_LIBS})
-  target_link_libraries(${TARGET} PUBLIC
-    -static
-    -static-libgcc
-    -static-libstdc++
-  )
+if (${BUILD_SHARED_LIBS})
+  if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+    set_target_properties(${TARGET} PROPERTIES
+      MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL"
+    )
+  endif()
+
+else()
+  if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+    set_target_properties(${TARGET} PROPERTIES
+      MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>"
+    )
+  else()
+    target_link_libraries(${TARGET} PUBLIC
+      -static
+      -static-libgcc
+      -static-libstdc++
+    )
+  endif()
 endif()
 
 target_link_libraries(${TARGET} PUBLIC
@@ -61,9 +74,15 @@ target_link_libraries(${TARGET} PUBLIC
 )
 
 if (WIN32)
-    target_link_libraries(${TARGET} PUBLIC
-    -mconsole
-  )
+  if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+    set_target_properties(${TARGET} PROPERTIES
+      WIN32_EXECUTABLE FALSE
+    )
+  else()
+      target_link_libraries(${TARGET} PUBLIC
+      -mconsole
+    )
+  endif()
 
   file(
     COPY scripts/1run.bat
