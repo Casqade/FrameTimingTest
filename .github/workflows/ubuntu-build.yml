@@ -24,12 +24,12 @@ jobs:
 
         config:
         - {
-            os: ubuntu-20.04,
+            os: ubuntu-latest,
             cc: "gcc",
             cxx: "g++"
           }
         - {
-            os: ubuntu-20.04,
+            os: ubuntu-latest,
             cc: "clang",
             cxx: "clang++"
           }
