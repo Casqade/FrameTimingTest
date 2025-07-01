@@ -38,4 +38,4 @@ set rect_speed_x= 640
 set rect_speed_y= 0
 
 
-TimingTest.exe %monitor_index% %window_width% %window_height% %video_mode% %vsync% %sleep_between_ticks% %tick_rate% %poll_events% %delta_time_mode% %delta_time_buffer_size% %delta_time_graph_mode% %subpixel_rendering% %rect_width% %rect_height% %rect_speed_x% %rect_speed_y%
+FrameTimingTest.exe %monitor_index% %window_width% %window_height% %video_mode% %vsync% %sleep_between_ticks% %tick_rate% %poll_events% %delta_time_mode% %delta_time_buffer_size% %delta_time_graph_mode% %subpixel_rendering% %rect_width% %rect_height% %rect_speed_x% %rect_speed_y%
