@@ -1,9 +1,11 @@
 #include <TimeUtils/Duration.hpp>
 
-#include <SDL2/SDL.h>
+#include <SDL.h>
 
+#include <string>
 #include <cassert>
 #include <iostream>
+
 
 using TimeUtils::Duration;
 
