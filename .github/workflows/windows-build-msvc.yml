@@ -1,0 +1,98 @@
+name: Build (Windows MSVC)
+
+on:
+  push:
+    paths-ignore:
+      - '**/README.md'
+      - '.github/workflows/emscripten-build.yml'
+      - '.github/workflows/macos-build.yml'
+      - '.github/workflows/ubuntu-build.yml'
+      - '.github/workflows/windows-build-msys2.yml'
+
+  pull_request:
+
+jobs:
+  build-msvc:
+    runs-on: windows-latest
+
+    strategy:
+      fail-fast: false
+
+      matrix:
+        build_type: ["Release"]
+        shared_libs_enabled: ["ON", "OFF"]
+
+        config:
+        - {
+            os: windows-latest,
+            cc: "cl",
+            cxx: "cl",
+            arch: "x86",
+            cmake-arch-args: "-T host=x86 -A Win32"
+          }
+        - {
+            os: windows-latest,
+            cc: "cl",
+            cxx: "cl",
+            arch: "x64",
+            cmake-arch-args: ""
+          }
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: 'true'
+
+    - name: Set reusable strings
+      id: strings
+      shell: bash
+      run: |
+        echo "build-output-dir=${{ github.workspace }}\build" >> "$GITHUB_OUTPUT"
+
+    - name: Download SDL2 development libraries
+      run: |
+        mkdir ${{ steps.strings.outputs.build-output-dir }}\sdl-dev-libs
+        cd ${{ steps.strings.outputs.build-output-dir }}\sdl-dev-libs
+        Invoke-WebRequest https://github.com/libsdl-org/SDL/releases/download/release-2.30.1/SDL2-devel-2.30.1-VC.zip -OutFile SDL2.zip
+        7z x -y SDL2.zip
+
+    - name: Configure CMake
+      run: >
+        cmake
+        -S ${{ github.workspace }}
+        -B ${{ steps.strings.outputs.build-output-dir }}
+        -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+        -DBUILD_SHARED_LIBS=${{ matrix.shared_libs_enabled }}
+        ${{ matrix.config.cmake-arch-args }}
+        -DSDL2_PATH=${{ steps.strings.outputs.build-output-dir }}\sdl-dev-libs\SDL2-2.30.1
+
+    - name: Build
+      run: >
+        cmake
+        --build ${{ steps.strings.outputs.build-output-dir }}
+        --config ${{ matrix.build_type }}
+
+    - name: Download SDL2 binaries
+      if: matrix.shared_libs_enabled == 'OFF'
+      run: |
+        mkdir SDL_deps
+        cd SDL_deps
+        Invoke-WebRequest https://github.com/libsdl-org/SDL/releases/download/release-2.30.1/SDL2-2.30.1-win32-${{ matrix.config.arch }}.zip -OutFile SDL2.zip
+        7z x -y SDL2.zip
+        copy SDL2.dll ${{ steps.strings.outputs.build-output-dir }}\bin\${{ matrix.build_type }}
+
+    - name: Fix for wrong script location
+      if: matrix.shared_libs_enabled == 'OFF'
+      run: >
+        mv
+        ${{ steps.strings.outputs.build-output-dir }}\bin\1run.bat
+        ${{ steps.strings.outputs.build-output-dir }}\bin\${{ matrix.build_type }}
+
+    - name: Upload Build Artifact
+      if: matrix.shared_libs_enabled == 'OFF'
+      uses: actions/upload-artifact@v4
+      with:
+        name: 'windows-msvc-${{ matrix.config.arch }}'
+        path: '${{ steps.strings.outputs.build-output-dir }}\bin\${{ matrix.build_type }}'
+        if-no-files-found: error
+        compression-level: 9
