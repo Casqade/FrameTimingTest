@@ -21,6 +21,7 @@ jobs:
       matrix:
         build_type: ["Release"]
         cmake_generator: ["Ninja"]
+        shared_libs_enabled: ["ON"]
 
         config:
         - {
@@ -62,6 +63,7 @@ jobs:
         -DCMAKE_C_COMPILER=${{ matrix.config.cc }}
         -DCMAKE_CXX_COMPILER=${{ matrix.config.cxx }}
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+        -DBUILD_SHARED_LIBS=${{ matrix.shared_libs_enabled }}
 
     - name: Build
       run: >
