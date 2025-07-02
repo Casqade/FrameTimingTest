@@ -1,17 +1,17 @@
 @echo off
 
 set monitor_index= 0
-set window_width= 2560
-set window_height= 1440
+set window_width= 1600
+set window_height= 900
 
 :: 0 = windowed
 :: 1 = windowed_borderless
 :: 2 = fullscreen
 :: 3 = fullscreen_borderless
-set video_mode= 2
+set video_mode= 0
 
 set vsync= 1
-set sleep_between_ticks= 0
+set sleep_between_ticks= 1
 set tick_rate= 0
 set poll_events= 1
 
@@ -20,8 +20,8 @@ set poll_events= 1
 :: 2 = fixed (floor to tick)
 :: 3 = fixed (round to tick)
 :: 4 = fixed (interpolated)
-set delta_time_mode= 4
-set delta_time_buffer_size= 432
+set delta_time_mode= 0
+set delta_time_buffer_size= 300
 
 :: 0 = hidden
 :: 1 = absolute

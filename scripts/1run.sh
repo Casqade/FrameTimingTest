@@ -1,17 +1,17 @@
 #!/bin/bash
 
 monitor_index=0
-window_width=2560
-window_height=1440
+window_width=1600
+window_height=900
 
 # 0 = windowed
 # 1 = windowed_borderless
 # 2 = fullscreen
 # 3 = fullscreen_borderless
-video_mode=2
+video_mode=0
 
 vsync=1
-sleep_between_ticks=0
+sleep_between_ticks=1
 tick_rate=0
 poll_events=1
 
@@ -20,8 +20,8 @@ poll_events=1
 # 2 = fixed (floor to tick)
 # 3 = fixed (round to tick)
 # 4 = fixed (interpolated)
-delta_time_mode=4
-delta_time_buffer_size=432
+delta_time_mode=0
+delta_time_buffer_size=300
 
 # 0 = hidden
 # 1 = absolute
